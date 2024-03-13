@@ -1,18 +1,4 @@
-# Generates a secure private k ey and encodes it as PEM
-resource "tls_private_key" "lit_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-# Create the Key Pair
-resource "aws_lightsail_key_pair" "lit_key" {
-  name       = "lamp"
-  public_key = tls_private_key.lit_key.public_key_openssh
-}
-# Save file
-resource "local_file" "ssh_key" {
-  filename = "week7d2.pem"
-  content  = tls_private_key.lit_key.private_key_pem
-}
+
 
 resource "aws_lightsail_instance" "server1" {
   name              = "lamp-server"
@@ -20,4 +6,5 @@ resource "aws_lightsail_instance" "server1" {
   bundle_id         = "medium_1_0"
   availability_zone = "us-east-1a"
   key_pair_name     = "lamp"
+  user_data = file("resume.sh")
 }
